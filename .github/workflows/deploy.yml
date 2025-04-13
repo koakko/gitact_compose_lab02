@@ -1,0 +1,22 @@
+name: "Try Github Action with Docker Compose"
+on:
+  push:
+    branch: main
+  pull_request:
+    branch: main
+jobs:
+  web:
+    runs-on: self-hosted
+    steps:
+      -uses: actions/checkout@v3
+      -name: "Deploy with docker compose"
+      working-directory: ./
+      run: |
+            docker stop cfrontend || true
+            docker stop cbackend || true
+            docker compose up -d --build
+      -name: "test frontend anb backend"
+      run: |
+            sleep 5
+            curl http://localhost:8080
+            curl http://localhost:5000/api/hello
